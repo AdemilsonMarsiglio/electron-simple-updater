@@ -38,10 +38,12 @@ class Linux extends Platform {
 
     electronApi.offApp('will-quit', this.quitAndInstall);
 
+    console.log('usou a minha complacao');
+
     const updateScript = `
       if [ "\${RESTART_REQUIRED}" = 'true' ]; then
         cp -f "\${UPDATE_FILE}" "\${APP_IMAGE}"
-        (exec "\${APP_IMAGE}") & disown $!
+        (exec "\${APP_IMAGE}" --no-sandbox) & disown $!
       else
         (sleep 2 && cp -f "\${UPDATE_FILE}" "\${APP_IMAGE}") & disown $!
       fi
