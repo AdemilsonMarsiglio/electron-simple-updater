@@ -114,6 +114,7 @@ class Linux extends Platform {
       }
     }
 
+    console.log('Os argumentos informados na execução do programa sao:', str);
     return str;
   }
 
