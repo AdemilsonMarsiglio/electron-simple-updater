@@ -38,12 +38,10 @@ class Linux extends Platform {
 
     electronApi.offApp('will-quit', this.quitAndInstall);
 
-    console.log('usou a minha complacao');
-
     const updateScript = `
       if [ "\${RESTART_REQUIRED}" = 'true' ]; then
         cp -f "\${UPDATE_FILE}" "\${APP_IMAGE}"
-        (exec "\${APP_IMAGE}" --no-sandbox) & disown $!
+        (exec "\${APP_IMAGE}" "\${ARGS}") & disown $!
       else
         (sleep 2 && cp -f "\${UPDATE_FILE}" "\${APP_IMAGE}") & disown $!
       fi
@@ -57,6 +55,7 @@ class Linux extends Platform {
       env: {
         ...process.env,
         APP_IMAGE: this.getAppImagePath(),
+        ARGS: this.getArguments(),
         OLD_PID: process.pid,
         RESTART_REQUIRED: restartRequired === true ? 'true' : 'false',
         UPDATE_FILE: this.lastUpdatePath,
@@ -103,6 +102,19 @@ class Linux extends Platform {
     }
 
     return appImagePath;
+  }
+
+  getArguments() {
+    const args = process.argv;
+    let str = '';
+    
+    if (args) {
+      for (const idx in args) {
+        str += `${args[idx]} `;
+      }
+    }
+
+    return str;
   }
 
   getUpdatePath(version) {
